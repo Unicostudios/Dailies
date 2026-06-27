@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>dailies</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2170 2170'%3E%3Crect width='2170' height='2170' rx='490' fill='%230B0B0A'/%3E%3Cpath d='M551.5 465C551.5 437.386 573.886 415 601.5 415H1333.5C1345.28 415 1356.69 419.166 1365.71 426.761L1493 534L1604.93 653.065C1613.65 662.338 1618.5 674.585 1618.5 687.312V1085L1622.29 1481.75C1622.42 1495.62 1616.79 1508.93 1606.73 1518.48L1364.47 1743.84C1355.17 1752.3 1343.02 1756.95 1330.44 1756.85L601.5 1755C573.886 1755 551.5 1732.61 551.5 1705V465Z' fill='%23F1E9DD'/%3E%3Cpath d='M1344.84 1587.76C1338.99 1537.34 1380.97 1494.29 1431.51 1498.86L1610 1515L1496.89 1623.79L1363.09 1745L1344.84 1587.76Z' fill='%23DC7642'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -291,6 +292,28 @@
   .plan-feature { font-size: 12px; color: var(--ink-soft); margin: 4px 0; line-height: 1.5; }
   .plan-badge { position: absolute; top: -9px; right: 12px; background: var(--sage); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
   .plan-cta { margin-top: 12px; width: 100%; }
+
+  /* ---------- sidebar logo ---------- */
+  .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 22px; margin-bottom: 20px; }
+  .sidebar-logo svg { flex-shrink: 0; }
+  .sidebar-logo-word { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); font-weight: 700; }
+
+  /* ---------- insights view ---------- */
+  .insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+  .insights-card { padding: 20px 22px; }
+  .insights-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin-bottom: 8px; }
+  .insights-value { font-family: 'Newsreader', serif; font-size: 36px; line-height: 1; color: var(--ink); }
+  .insights-delta { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-top: 6px; color: var(--ink-faint); }
+  .insights-delta.up { color: var(--sage); }
+  .insights-delta.down { color: var(--rust); }
+  .insights-period { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); margin-bottom: 22px; }
+  .insights-section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin: 0 0 12px; }
+  .insights-media-list { display: flex; flex-direction: column; gap: 1px; }
+  .insights-media-item { display: flex; justify-content: space-between; align-items: baseline; padding: 11px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink); }
+  .insights-media-item:first-child { border-top: none; }
+  .insights-media-caption { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; color: var(--ink-soft); }
+  .insights-media-stat { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); flex-shrink: 0; margin-left: 16px; }
+  .insights-not-connected { padding: 28px 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--ink-faint); text-align: center; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -336,7 +359,14 @@
   <div id="appShell" class="hidden">
 
     <nav class="sidebar glass">
-      <div class="sidebar-word"><b>dailies</b></div>
+      <div class="sidebar-logo">
+        <svg width="26" height="26" viewBox="0 0 2170 2170" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="2170" height="2170" rx="490" fill="#0B0B0A"/>
+          <path d="M551.5 465C551.5 437.386 573.886 415 601.5 415H1333.5C1345.28 415 1356.69 419.166 1365.71 426.761L1493 534L1604.93 653.065C1613.65 662.338 1618.5 674.585 1618.5 687.312V1085L1622.29 1481.75C1622.42 1495.62 1616.79 1508.93 1606.73 1518.48L1364.47 1743.84C1355.17 1752.3 1343.02 1756.95 1330.44 1756.85L601.5 1755C573.886 1755 551.5 1732.61 551.5 1705V465Z" fill="#F1E9DD"/>
+          <path d="M1344.84 1587.76C1338.99 1537.34 1380.97 1494.29 1431.51 1498.86L1610 1515L1496.89 1623.79L1363.09 1745L1344.84 1587.76Z" fill="#DC7642"/>
+        </svg>
+        <span class="sidebar-logo-word">dailies</span>
+      </div>
       <div class="sidebar-ring-block">
         <svg width="44" height="44" viewBox="0 0 44 44" class="ring-svg">
           <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(27,27,26,0.1)" stroke-width="5"/>
@@ -349,6 +379,7 @@
       <div class="nav-item" data-view="discover">discover</div>
       <div class="nav-item" data-view="history">history</div>
       <div class="nav-item" data-view="profile">profile</div>
+      <div class="nav-item" data-view="insights">insights</div>
       <div class="sidebar-foot">
         <div class="conn-status" id="connStatus"><span class="conn-dot"></span><span id="connText">checking…</span></div>
       </div>
@@ -494,6 +525,13 @@
               <button class="btn btn-ghost plan-cta" disabled>coming soon</button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-insights">
+        <div class="view-title">insights</div>
+        <div id="insightsBody">
+          <div class="history-empty" style="padding:28px 0;">loading…</div>
         </div>
       </section>
 
@@ -948,6 +986,7 @@ function dismissSplash() {
       item.classList.add('active');
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.getElementById('view-' + item.dataset.view).classList.add('active');
+      if (item.dataset.view === 'insights') loadInsights();
     });
   });
 
@@ -1491,6 +1530,70 @@ function dismissSplash() {
         });
       });
     } catch (err) {}
+  }
+
+  // ---------- insights ----------
+  async function loadInsights() {
+    const body = document.getElementById('insightsBody');
+    body.innerHTML = '<div class="history-empty" style="padding:28px 0;">loading…</div>';
+    try {
+      const res = await authedFetch(`${API_BASE}/instagram/insights`);
+      if (res.status === 400) {
+        body.innerHTML = `<div class="insights-not-connected">connect your instagram account in <b>profile</b> to see insights</div>`;
+        return;
+      }
+      if (!res.ok) { body.innerHTML = `<div class="insights-not-connected">could not load insights</div>`; return; }
+      renderInsights(await res.json());
+    } catch (err) {
+      body.innerHTML = `<div class="insights-not-connected">could not reach the server</div>`;
+    }
+  }
+
+  function renderInsights(data) {
+    const body = document.getElementById('insightsBody');
+    const followers = data.followers_count ?? data.followers ?? null;
+    const reach = data.reach ?? null;
+    const impressions = data.impressions ?? null;
+    const profileViews = data.profile_views ?? data.profile_views_count ?? null;
+    const period = data.period || 'last 30 days';
+
+    const fmt = n => n == null ? '—' : Number(n).toLocaleString();
+    const metrics = [
+      { label: 'followers', value: followers },
+      { label: 'reach', value: reach },
+      { label: 'impressions', value: impressions },
+      { label: 'profile views', value: profileViews },
+    ];
+
+    const cards = metrics.map(m => `
+      <div class="insights-card glass">
+        <div class="insights-label">${m.label}</div>
+        <div class="insights-value">${fmt(m.value)}</div>
+      </div>
+    `).join('');
+
+    let mediaHtml = '';
+    const media = data.media || data.recent_media || [];
+    if (media.length) {
+      const rows = media.map(m => `
+        <div class="insights-media-item">
+          <span class="insights-media-caption">${escapeHtml(m.caption || m.id || '')}</span>
+          <span class="insights-media-stat">${fmt(m.like_count ?? null)} ♥  ${fmt(m.comments_count ?? null)} 💬</span>
+        </div>
+      `).join('');
+      mediaHtml = `
+        <div class="profile-card glass" style="margin-top:0;">
+          <p class="insights-section-label">recent posts</p>
+          <div class="insights-media-list">${rows}</div>
+        </div>
+      `;
+    }
+
+    body.innerHTML = `
+      <p class="insights-period">${escapeHtml(period)}</p>
+      <div class="insights-grid">${cards}</div>
+      ${mediaHtml}
+    `;
   }
 
   async function boot() {
