@@ -42,7 +42,7 @@ async def callback(code: str = None, state: str = None, error: str = None):
     sb = get_supabase()
     sb.table("instagram_accounts").upsert({
         "user_id": user_id,
-        "ig_business_id": account["ig_business_id"],
+        "ig_user_id": account["ig_business_id"],
         "ig_username": account.get("ig_username"),
         "page_id": account["page_id"],
         "access_token": long_lived["access_token"],
