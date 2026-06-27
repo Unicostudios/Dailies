@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>roughcut</title>
+<title>dailies</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -287,19 +287,20 @@
 <body>
 
   <div id="splash" onclick="dismissSplash()">
-    <div class="splash-logo">roughcut</div>
+    <div class="splash-logo">dailies</div>
     <div class="splash-tag">the log, not the streak</div>
     <div class="splash-hint">tap anywhere to continue</div>
   </div>
 
   <div id="authScreen" class="hidden">
     <div class="auth-card glass-strong">
-      <div class="auth-logo">roughcut</div>
-      <div class="auth-sub">type the thing you keep almost posting about.<br>get a script, a caption, and a reason to actually shoot it.</div>
+      <div class="auth-logo">dailies</div>
+      <div class="auth-sub">script it. caption it. shoot it.</div>
       <div class="auth-tabs">
         <div class="auth-tab active" id="tabSignin" onclick="setAuthMode('signin')">sign in</div>
         <div class="auth-tab" id="tabSignup" onclick="setAuthMode('signup')">sign up</div>
       </div>
+        <input id="username" type="text" placeholder="username" autocomplete="username">
       <input id="email" type="email" placeholder="email" autocomplete="username">
       <input id="password" type="password" placeholder="password" autocomplete="current-password">
       <button class="btn" style="width:100%; margin-top:6px;" id="authSubmitBtn" onclick="submitAuth()">enter</button>
@@ -310,7 +311,7 @@
   <div id="appShell" class="hidden">
 
     <nav class="sidebar glass">
-      <div class="sidebar-word"><b>roughcut</b></div>
+      <div class="sidebar-word"><b>dailies</b></div>
       <div class="sidebar-ring-block">
         <svg width="44" height="44" viewBox="0 0 44 44" class="ring-svg">
           <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(27,27,26,0.1)" stroke-width="5"/>
@@ -579,6 +580,7 @@
     document.getElementById('tabSignin').classList.toggle('active', mode === 'signin');
     document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
     document.getElementById('authSubmitBtn').textContent = mode === 'signin' ? 'enter' : 'create account';
+    document.getElementById("username").style.display = mode === "signin" ? "none" : "block";
     setStatus('authStatus', '');
   }
 
@@ -605,7 +607,7 @@
       try {
         const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
           method: 'POST', headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password, data: { username: document.getElementById("username").value.trim() } })
         });
         const data = await res.json();
         console.log('signup response', res.status, data);
@@ -690,7 +692,7 @@
     const niceName = namePart.replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     document.getElementById('profileName').textContent = niceName;
     document.getElementById('profileEmail').textContent = email;
-    document.getElementById('profileSince').textContent = 'on roughcut since ' + new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    document.getElementById('profileSince').textContent = 'on dailies since ' + new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
     const avatarEl = document.getElementById('profileAvatar');
     if (avatarUrl) {
       avatarEl.style.backgroundImage = `url(${avatarUrl})`;
