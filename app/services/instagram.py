@@ -82,32 +82,37 @@ async def get_long_lived_token(short_token: str) -> dict:
 
 
 async def find_instagram_business_account(access_token: str) -> Optional[dict]:
-    """Finds the first Facebook Page (and its linked Instagram Business account) the user manages."""
+    """Finds the first Facebook Page (and its linked Instagram Business account) the user manages, via their Business Manager."""
     async with httpx.AsyncClient() as client:
-        pages_res = await client.get(
-            f"{GRAPH_BASE}/me/accounts", params={"access_token": access_token}
+        biz_res = await client.get(
+            f"{GRAPH_BASE}/me/businesses", params={"access_token": access_token}
         )
-        pages_res.raise_for_status()
-        pages = pages_res.json().get("data", [])
-        print(f"DEBUG: pages found = {pages}")
-        for page in pages:
-            page_id = page["id"]
-            ig_res = await client.get(
-                f"{GRAPH_BASE}/{page_id}",
-                params={"fields": "instagram_business_account", "access_token": access_token},
+        biz_res.raise_for_status()
+        businesses = biz_res.json().get("data", [])
+        print(f"DEBUG: businesses found = {businesses}")
+
+        for business in businesses:
+            business_id = business["id"]
+            pages_res = await client.get(
+                f"{GRAPH_BASE}/{business_id}/owned_pages",
+                params={
+                    "fields": "id,name,instagram_business_account{id,username}",
+                    "access_token": access_token,
+                },
             )
-            ig_res.raise_for_status()
-            ig_data = ig_res.json()
-            ig_account = ig_data.get("instagram_business_account")
-            print(f"DEBUG: page_id={page_id} ig_data={ig_data}")
-            if ig_account:
-                ig_id = ig_account["id"]
-                username_res = await client.get(
-                    f"{GRAPH_BASE}/{ig_id}",
-                    params={"fields": "username", "access_token": access_token},
-                )
-                username = username_res.json().get("username") if username_res.status_code == 200 else None
-                return {"page_id": page_id, "ig_business_id": ig_id, "ig_username": username}
+            pages_res.raise_for_status()
+            pages = pages_res.json().get("data", [])
+            print(f"DEBUG: business_id={business_id} pages found = {pages}")
+
+            for page in pages:
+                page_id = page["id"]
+                ig_account = page.get("instagram_business_account")
+                if ig_account:
+                    return {
+                        "page_id": page_id,
+                        "ig_business_id": ig_account["id"],
+                        "ig_username": ig_account.get("username"),
+                    }
     return None
 
 
