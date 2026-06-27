@@ -671,30 +671,30 @@ function splashRun(){
     ball.style.opacity = '1';
     ball.style.transform = `translate(${startPt.x-DOT/2}px, ${startPt.y-DOT/2}px)`;
 
-    splashRunLeg(ball, startPt, pA, 280, 0, DOT, () => {
+    splashRunLeg(ball, startPt, pA, 420, 0, DOT, () => {
       squashAt(pA.x, pA.y);
       setTimeout(()=>{
         stampA.style.left = (pA.x-DOT/2)+'px';
         stampA.style.top  = (pA.y-DOT/2)+'px';
         stampA.style.opacity = '1';
 
-        splashRunLeg(ball, pA, pB, 300, 30, DOT, () => {
+        splashRunLeg(ball, pA, pB, 460, 38, DOT, () => {
           squashAt(pB.x, pB.y);
           setTimeout(()=>{
             stampB.style.left = (pB.x-DOT/2)+'px';
             stampB.style.top  = (pB.y-DOT/2)+'px';
             stampB.style.opacity = '1';
 
-            splashRunLeg(ball, pB, foldPt, 360, 56, DOT, () => {
+            splashRunLeg(ball, pB, foldPt, 540, 70, DOT, () => {
               ball.style.opacity = '0';
-              foldPath.style.transition = 'opacity 160ms ease-out, transform 220ms cubic-bezier(.2,.9,.3,1.2)';
+              foldPath.style.transition = 'opacity 200ms ease-out, transform 260ms cubic-bezier(.2,.9,.3,1.2)';
               foldPath.style.opacity = '1';
               foldPath.style.transform = 'scale(1,1)';
-              setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 350);
+              setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 750);
             });
-          }, 65);
+          }, 130);
         });
-      }, 65);
+      }, 130);
     });
   }
 
@@ -713,14 +713,14 @@ function splashRun(){
       requestAnimationFrame(() => {
         const fadeAnim = word.animate(
           [{ opacity: 0 }, { opacity: 1 }],
-          { duration: 850, easing: 'ease-out', fill: 'forwards' }
+          { duration: 1100, easing: 'ease-out', fill: 'forwards' }
         );
 
         fadeAnim.finished.then(() => {
           setTimeout(() => {
             word.animate(
               [{ transform: `translateX(${-shift}px)` }, { transform: 'translateX(0px)' }],
-              { duration: 600, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' }
+              { duration: 750, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' }
             );
             setTimeout(() => {
               markWrap.animate(
@@ -728,11 +728,11 @@ function splashRun(){
                   { opacity: 0, transform: 'scale(0.85)' },
                   { opacity: 1, transform: 'scale(1)' }
                 ],
-                { duration: 300, easing: 'cubic-bezier(.22,.9,.3,1.2)', fill: 'forwards' }
+                { duration: 380, easing: 'cubic-bezier(.22,.9,.3,1.2)', fill: 'forwards' }
               );
-            }, 90);
-            setTimeout(resolve, 660);
-          }, 130);
+            }, 130);
+            setTimeout(resolve, 850);
+          }, 500);
         });
       });
     });
@@ -759,7 +759,7 @@ function dismissSplash() {
     splash.style.opacity = '0';
     setTimeout(() => { splash.classList.add('hidden'); boot(); }, 400);
   }
-  setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 3500);
+  setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 7000);
 
   function setAuthMode(mode) {
     authMode = mode;
