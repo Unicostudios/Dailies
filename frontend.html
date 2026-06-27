@@ -33,9 +33,18 @@
 
   #splash { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #EFE9DE 0%, #E9EDE6 50%, #ECE3DC 100%); cursor: pointer; }
   .splash-logo { font-family: 'Newsreader', serif; font-style: italic; font-size: 56px; opacity: 0; transform: translateY(10px) scale(0.96); animation: splashIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; }
-  .splash-tag { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-top: 14px; opacity: 0; animation: splashIn 0.9s ease 0.6s forwards; }
+  .splash-tag { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-top: 14px; opacity: 0; animation: splashIn 0.9s ease 1.8s forwards; }
   @keyframes splashIn { to { opacity: 1; transform: translateY(0) scale(1); } }
-  .splash-hint { position: absolute; bottom: 36px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); opacity: 0; animation: splashIn 0.9s ease 1.4s forwards; }
+  .splash-hint { position: absolute; bottom: 36px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); opacity: 0; animation: splashIn 0.9s ease 2.9s forwards; }
+
+  .splash-stage{ position:relative; display:flex; flex-direction:row; align-items:center; gap:18px; }
+  .splash-mark-wrap{ position:relative; width:96px; height:96px; flex:0 0 auto; opacity:0; }
+  .splash-mark-wrap svg{ width:100%; height:100%; display:block; overflow:visible; }
+  #splashFoldPath{ opacity:0; transform-origin: 74% 78%; transform: scale(1.3,0.3); }
+  .splash-word{ font-size:28px; letter-spacing:0.6px; color:var(--cream, #F1E9DD); font-style:normal; font-weight:500; font-family:'Poppins',sans-serif; opacity:0; user-select:none; line-height:1; position:relative; z-index:0; }
+  .splash-ball{ position:absolute; width:7px; height:7px; border-radius:50%; background:#DC7642; left:0; top:0; opacity:0; pointer-events:none; will-change:transform; z-index:2; }
+  .splash-stamp{ position:absolute; width:7px; height:7px; border-radius:50%; background:#DC7642; opacity:0; pointer-events:none; transition:opacity 90ms ease-out; z-index:2; }
+
 
   .glass { background: var(--glass); backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); border: 1px solid var(--glass-line); border-radius: 14px; box-shadow: 0 8px 30px rgba(27,27,26,0.06); }
   .glass-strong { background: var(--glass-strong); backdrop-filter: blur(22px) saturate(160%); -webkit-backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--glass-line); border-radius: 16px; box-shadow: 0 10px 36px rgba(27,27,26,0.08); }
@@ -283,11 +292,27 @@
   .plan-badge { position: absolute; top: -9px; right: 12px; background: var(--sage); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
   .plan-cta { margin-top: 12px; width: 100%; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <div id="splash" onclick="dismissSplash()">
-    <div class="splash-logo">dailies</div>
+    <div class="splash-stage" id="splashStage">
+      <div class="splash-mark-wrap" id="splashMarkWrap">
+        <svg viewBox="0 0 2170 2170">
+          <rect x="0.5" y="0.5" width="2169" height="2169" rx="490.5" fill="#0B0B0A"/>
+          <rect x="0.5" y="0.5" width="2169" height="2169" rx="490.5" stroke="white" stroke-opacity="0.9"/>
+          <path d="M551.5 465C551.5 437.386 573.886 415 601.5 415H1085H1333.5C1345.28 415 1356.69 419.166 1365.71 426.761L1493 534L1604.93 653.065C1613.65 662.338 1618.5 674.585 1618.5 687.312V750V1085L1622.29 1481.75C1622.42 1495.62 1616.79 1508.93 1606.73 1518.48L1483 1636L1364.47 1743.84C1355.17 1752.3 1343.02 1756.95 1330.44 1756.85L1085 1755H601.5C573.886 1755 551.5 1732.61 551.5 1705V465Z" fill="#F1E9DD"/>
+          <path id="splashFoldPath" d="M1344.84 1587.76C1338.99 1537.34 1380.97 1494.29 1431.51 1498.86L1610 1515L1496.89 1623.79L1363.09 1745L1344.84 1587.76Z" fill="#DC7642"/>
+        </svg>
+      </div>
+      <div class="splash-word" id="splashWord">d<span>a</span><span id="splashIB">ı</span>l<span id="splashIA">ı</span>es</div>
+      <div class="splash-ball" id="splashBall"></div>
+      <div class="splash-stamp" id="splashStampA"></div>
+      <div class="splash-stamp" id="splashStampB"></div>
+    </div>
     <div class="splash-tag">the log, not the streak</div>
     <div class="splash-hint">tap anywhere to continue</div>
   </div>
@@ -567,13 +592,174 @@
   }
   function clearSession() { localStorage.removeItem(STORAGE_KEY); }
 
-  function dismissSplash() {
+  
+function splashEaseIn(t){ return t*t*t; }
+function splashEaseOut(t){ return 1-Math.pow(1-t,3); }
+function splashLerp(a,b,t){ return a+(b-a)*t; }
+
+let splashRaf = null;
+
+function splashRunLeg(ball, p0, p1, duration, arcHeight, dot, onDone){
+  const start = performance.now();
+  function frame(now){
+    let t = (now - start) / duration;
+    if (t >= 1) t = 1;
+    let x, y;
+    if (arcHeight === 0){
+      const ty = splashEaseIn(t);
+      x = splashLerp(p0.x, p1.x, t);
+      y = splashLerp(p0.y, p1.y, ty);
+    } else {
+      x = splashLerp(p0.x, p1.x, t);
+      const baseY = splashLerp(p0.y, p1.y, t);
+      let arc;
+      if (t < 0.5){ arc = splashEaseOut(t/0.5); }
+      else { arc = 1 - splashEaseIn((t-0.5)/0.5); }
+      y = baseY - arc * arcHeight;
+    }
+    ball.style.transform = `translate(${x-dot/2}px, ${y-dot/2}px)`;
+    if (t < 1){ splashRaf = requestAnimationFrame(frame); }
+    else { onDone && onDone(); }
+  }
+  splashRaf = requestAnimationFrame(frame);
+}
+
+function splashRun(){
+  const DOT = 7;
+  const DOT_GAP = -4;
+
+  const stage = document.getElementById('splashStage');
+  const markWrap = document.getElementById('splashMarkWrap');
+  const word = document.getElementById('splashWord');
+  const ball = document.getElementById('splashBall');
+  const stampA = document.getElementById('splashStampA');
+  const stampB = document.getElementById('splashStampB');
+  const foldPath = document.getElementById('splashFoldPath');
+
+  if (!stage || !markWrap || !word) return;
+
+  function pointFor(el){
+    const r = el.getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    return { x: r.left + r.width/2 - s.left, y: r.top - s.top };
+  }
+
+  function squashAt(x, y){
+    ball.style.transform = `translate(${x-DOT/2}px, ${y-DOT/2}px) scale(1.5,0.55)`;
+  }
+
+  function computeGeometry(){
+    const markRect = markWrap.querySelector('svg').getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
+    const vb = 2170;
+    const foldVB = { x: 1480, y: 1565 };
+    const foldPt = {
+      x: markRect.left - stageRect.left + (foldVB.x/vb)*markRect.width,
+      y: markRect.top  - stageRect.top  + (foldVB.y/vb)*markRect.height
+    };
+    const pA = pointFor(document.getElementById('splashIA'));
+    pA.y -= DOT_GAP;
+    const pB = pointFor(document.getElementById('splashIB'));
+    pB.y -= DOT_GAP;
+    return { pA, pB, foldPt };
+  }
+
+  function sequence(){
+    const { pA, pB, foldPt } = computeGeometry();
+    const startPt = { x: pA.x + 8, y: -30 };
+
+    ball.style.opacity = '1';
+    ball.style.transform = `translate(${startPt.x-DOT/2}px, ${startPt.y-DOT/2}px)`;
+
+    splashRunLeg(ball, startPt, pA, 280, 0, DOT, () => {
+      squashAt(pA.x, pA.y);
+      setTimeout(()=>{
+        stampA.style.left = (pA.x-DOT/2)+'px';
+        stampA.style.top  = (pA.y-DOT/2)+'px';
+        stampA.style.opacity = '1';
+
+        splashRunLeg(ball, pA, pB, 300, 30, DOT, () => {
+          squashAt(pB.x, pB.y);
+          setTimeout(()=>{
+            stampB.style.left = (pB.x-DOT/2)+'px';
+            stampB.style.top  = (pB.y-DOT/2)+'px';
+            stampB.style.opacity = '1';
+
+            splashRunLeg(ball, pB, foldPt, 360, 56, DOT, () => {
+              ball.style.opacity = '0';
+              foldPath.style.transition = 'opacity 160ms ease-out, transform 220ms cubic-bezier(.2,.9,.3,1.2)';
+              foldPath.style.opacity = '1';
+              foldPath.style.transform = 'scale(1,1)';
+              setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 350);
+            });
+          }, 65);
+        });
+      }, 65);
+    });
+  }
+
+  function playIntro(){
+    return new Promise(resolve => {
+      word.style.transform = 'none';
+      const markRect = markWrap.getBoundingClientRect();
+      const wordRectNatural = word.getBoundingClientRect();
+      const shift = wordRectNatural.left - markRect.left;
+
+      word.style.opacity = '0';
+      word.style.transform = `translateX(${-shift}px)`;
+      markWrap.style.opacity = '0';
+      markWrap.style.transform = 'scale(0.85)';
+
+      requestAnimationFrame(() => {
+        const fadeAnim = word.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: 850, easing: 'ease-out', fill: 'forwards' }
+        );
+
+        fadeAnim.finished.then(() => {
+          setTimeout(() => {
+            word.animate(
+              [{ transform: `translateX(${-shift}px)` }, { transform: 'translateX(0px)' }],
+              { duration: 600, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'forwards' }
+            );
+            setTimeout(() => {
+              markWrap.animate(
+                [
+                  { opacity: 0, transform: 'scale(0.85)' },
+                  { opacity: 1, transform: 'scale(1)' }
+                ],
+                { duration: 300, easing: 'cubic-bezier(.22,.9,.3,1.2)', fill: 'forwards' }
+              );
+            }, 90);
+            setTimeout(resolve, 660);
+          }, 130);
+        });
+      });
+    });
+  }
+
+  ball.style.opacity = '0';
+  stampA.style.opacity = '0';
+  stampB.style.opacity = '0';
+  foldPath.style.opacity = '0';
+
+  playIntro().then(sequence);
+}
+
+if (document.fonts && document.fonts.ready){
+  document.fonts.ready.then(() => setTimeout(splashRun, 30));
+} else {
+  setTimeout(splashRun, 200);
+}
+
+
+function dismissSplash() {
     const splash = document.getElementById('splash');
     splash.style.transition = 'opacity 0.4s ease';
     splash.style.opacity = '0';
     setTimeout(() => { splash.classList.add('hidden'); boot(); }, 400);
   }
-  setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 1800);
+  setTimeout(() => { if (!document.getElementById('splash').classList.contains('hidden')) dismissSplash(); }, 3500);
 
   function setAuthMode(mode) {
     authMode = mode;
