@@ -44,9 +44,7 @@ async def callback(code: str = None, state: str = None, error: str = None):
         "user_id": user_id,
         "ig_user_id": account["ig_business_id"],
         "ig_username": account.get("ig_username"),
-        "page_id": account["page_id"],
         "access_token": long_lived["access_token"],
-        "token_expires_at": long_lived["expires_at"].isoformat(),
     }, on_conflict="user_id").execute()
 
     return HTMLResponse(
