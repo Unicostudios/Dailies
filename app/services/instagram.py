@@ -89,6 +89,7 @@ async def find_instagram_business_account(access_token: str) -> Optional[dict]:
         )
         pages_res.raise_for_status()
         pages = pages_res.json().get("data", [])
+        print(f"DEBUG: pages found = {pages}")
         for page in pages:
             page_id = page["id"]
             ig_res = await client.get(
@@ -98,6 +99,7 @@ async def find_instagram_business_account(access_token: str) -> Optional[dict]:
             ig_res.raise_for_status()
             ig_data = ig_res.json()
             ig_account = ig_data.get("instagram_business_account")
+            print(f"DEBUG: page_id={page_id} ig_data={ig_data}")
             if ig_account:
                 ig_id = ig_account["id"]
                 username_res = await client.get(
