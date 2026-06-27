@@ -175,7 +175,7 @@ async def get_account_insights(ig_user_id: str, access_token: str) -> dict:
         insights_res = await client.get(
             f"{GRAPH_BASE}/{ig_user_id}/insights",
             params={
-                "metric": "reach,profile_views",
+                "metric": "reach",
                 "period": "day",
                 "metric_type": "time_series",
                 "access_token": access_token,

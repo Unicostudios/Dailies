@@ -85,7 +85,7 @@
   .sidebar-ring-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-faint); line-height: 1.4; }
   .sidebar-ring-label b { color: var(--ink); font-size: 13px; display: block; }
 
-  .nav-item { font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); padding: 11px 22px; margin: 0 10px; cursor: pointer; border-radius: 9px; transition: color 0.15s ease, background 0.15s ease; }
+  .nav-item { font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: none; letter-spacing: 0.01em; color: var(--ink-soft); padding: 11px 22px; margin: 0 10px; cursor: pointer; border-radius: 9px; transition: color 0.15s ease, background 0.15s ease; }
   .nav-item:hover { color: var(--ink); background: rgba(255,255,255,0.4); }
   .nav-item.active { color: var(--ink); background: rgba(255,255,255,0.7); font-weight: 500; }
 
@@ -122,7 +122,7 @@
 
   /* ---------- ring progress (today page, big) ---------- */
   .progress-ring-block { margin-bottom: 30px; padding: 22px 24px; display: flex; align-items: center; gap: 22px; }
-  .ring-svg circle { transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+  .ring-svg circle { transition: stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
   .ring-num { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
   .progress-text { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
   .progress-text b { color: var(--ink); }
@@ -293,6 +293,27 @@
   .plan-badge { position: absolute; top: -9px; right: 12px; background: var(--sage); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; }
   .plan-cta { margin-top: 12px; width: 100%; }
 
+  /* ---------- topic shuffle fade ---------- */
+  @keyframes topicFade { 0%, 100% { opacity: 1; } 45%, 55% { opacity: 0; } }
+  .topic-fade { animation: topicFade 220ms ease forwards; }
+
+  /* ---------- history caption preview ---------- */
+  .history-caption-preview {
+    font-family: 'Inter', sans-serif; font-size: 12px; color: var(--ink-faint);
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.2s ease, opacity 0.2s ease, padding-top 0.2s ease;
+    line-height: 1.5; padding-top: 0; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .history-item:hover .history-caption-preview { max-height: 32px; opacity: 1; padding-top: 4px; }
+
+  /* ---------- burn undo ---------- */
+  .burn-pending { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--rust); display: flex; align-items: center; gap: 8px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .burn-undo-btn { cursor: pointer; color: var(--ink-soft); text-decoration: underline; background: none; border: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0; }
+
+  /* ---------- history filter banner ---------- */
+  .hist-filter-bar { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .hist-filter-clear { cursor: pointer; color: var(--rust); text-decoration: underline; background: none; border: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 0; }
+
   /* ---------- sidebar logo ---------- */
   .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 0 22px; margin-bottom: 20px; }
   .sidebar-logo svg { flex-shrink: 0; }
@@ -375,14 +396,11 @@
         </svg>
         <div class="sidebar-ring-label"><b id="sideRingNum">0</b>shot this month</div>
       </div>
-      <div class="nav-item active" data-view="today">today</div>
-      <div class="nav-item" data-view="discover">discover</div>
-      <div class="nav-item" data-view="history">history</div>
-      <div class="nav-item" data-view="profile">profile</div>
-      <div class="nav-item" data-view="insights">insights</div>
-      <div class="sidebar-foot">
-        <div class="conn-status" id="connStatus"><span class="conn-dot"></span><span id="connText">checking…</span></div>
-      </div>
+      <div class="nav-item active" data-view="today">Brainstorm</div>
+      <div class="nav-item" data-view="discover">For You</div>
+      <div class="nav-item" data-view="history">History</div>
+      <div class="nav-item" data-view="profile">Profile</div>
+      <div class="nav-item" data-view="insights">Your Insta</div>
     </nav>
 
     <main class="main" id="mainCol">
@@ -393,7 +411,7 @@
       </div>
 
       <section class="view active" id="view-today">
-        <div class="view-title">today</div>
+        <div class="view-title">Brainstorm</div>
         <div id="onboardExplainer"></div>
 
         <div class="progress-ring-block glass">
@@ -421,7 +439,7 @@
       </section>
 
       <section class="view" id="view-discover">
-        <div class="view-title">discover</div>
+        <div class="view-title">For You</div>
         <div class="explainer glass" style="margin-bottom:20px;">
           <span class="mark">→</span>
           <p>pick a category, then swipe or drag. <b>right</b> sends it to today and starts writing. <b>left</b> just skips it.</p>
@@ -529,7 +547,7 @@
       </section>
 
       <section class="view" id="view-insights">
-        <div class="view-title">insights</div>
+        <div class="view-title">Your Insta</div>
         <div id="insightsBody">
           <div class="history-empty" style="padding:28px 0;">loading…</div>
         </div>
@@ -587,7 +605,7 @@
   </div>
 
 <script>
-  const API_BASE = 'http://127.0.0.1:8000';
+  const API_BASE = '';
   const SUPABASE_URL = 'https://btovzrjnvsoukdhknjfz.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_e2K8K3gcPKvhuXFkvAmY1g_zsX0qrPT';
   const STORAGE_KEY = 'reelstreak_session';
@@ -606,6 +624,8 @@
   let accessToken = null, refreshToken = null, currentScriptId = null, currentScript = null;
   let reviseLog = [], historyCache = [], discoverCards = [], discoverIndex = 0, lastRenderedCompleted = -1;
   let authMode = 'signin', activeCategory = null, userEmail = null;
+  let histDaysShown = 7, histDayFilter = null;
+  const burnTimers = {};
 
   function setStatus(id, msg, isError) {
     const el = document.getElementById(id);
@@ -990,15 +1010,6 @@ function dismissSplash() {
     });
   });
 
-  async function checkServer() {
-    const el = document.getElementById('connStatus');
-    const txt = document.getElementById('connText');
-    try {
-      const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(3000) });
-      if (res.ok) { el.className = 'conn-status online'; txt.textContent = 'server running'; return true; }
-    } catch (err) {}
-    el.className = 'conn-status offline'; txt.textContent = 'server offline'; return false;
-  }
 
   async function loadChapter() {
     try { const res = await authedFetch(`${API_BASE}/progress/chapter`); if (!res.ok) return; renderProgress(await res.json()); } catch (err) {}
@@ -1061,21 +1072,30 @@ function dismissSplash() {
   }
 
   function shuffleTopic() {
+    const ta = document.getElementById('topic');
     if (historyCache.length === 0) {
-      document.getElementById('topic').placeholder = 'nothing in history yet to shuffle from — write the first one yourself';
+      ta.placeholder = 'nothing in history yet to shuffle from — write the first one yourself';
       return;
     }
     const pick = historyCache[Math.floor(Math.random() * historyCache.length)];
-    document.getElementById('topic').value = pick.topic;
-    checkDuplicate();
+    ta.classList.remove('topic-fade');
+    void ta.offsetWidth; // force reflow to restart animation
+    ta.classList.add('topic-fade');
+    setTimeout(() => {
+      ta.value = pick.topic;
+      checkDuplicate();
+    }, 110); // swap at mid-fade
+    ta.addEventListener('animationend', () => ta.classList.remove('topic-fade'), { once: true });
   }
 
   async function generate(topicOverride) {
     const topic = topicOverride || document.getElementById('topic').value.trim();
     if (!topic) { setStatus('genStatus', 'write a topic first', true); return; }
-    document.getElementById('genStatus').innerHTML = '<span class="writing-dots">writing</span>';
+    const genBtn = document.getElementById('genBtn');
+    genBtn.disabled = true;
+    genBtn.innerHTML = '<span class="writing-dots">writing</span>';
+    document.getElementById('genStatus').textContent = '';
     document.getElementById('genStatus').classList.remove('error');
-    document.getElementById('genBtn').disabled = true;
     try {
       const res = await authedFetch(`${API_BASE}/scripts/generate`, { method: 'POST', body: JSON.stringify({ topic }) });
       const data = await res.json();
@@ -1087,7 +1107,9 @@ function dismissSplash() {
     } catch (err) {
       setStatus('genStatus', 'could not reach the server — is it running?', true);
     } finally {
-      document.getElementById('genBtn').disabled = false;
+      const genBtn = document.getElementById('genBtn');
+      genBtn.disabled = false;
+      genBtn.textContent = 'generate script';
     }
   }
 
@@ -1131,19 +1153,28 @@ function dismissSplash() {
   async function markShot(scriptId) {
     const id = scriptId || currentScriptId;
     if (!id) return;
-    document.getElementById('shotBtn').disabled = true;
-    setStatus('shotStatus', 'logging…');
+    const panelBtn = !scriptId ? document.getElementById('shotBtn') : null;
+    if (panelBtn) { panelBtn.disabled = true; panelBtn.textContent = 'logging…'; }
+    setStatus('shotStatus', '');
     try {
       await authedFetch(`${API_BASE}/scripts/${id}/status?status=shot`, { method: 'PATCH' });
       const res = await authedFetch(`${API_BASE}/progress/log`, { method: 'POST', body: JSON.stringify({ script_id: id }) });
       const data = await res.json();
-      setStatus('shotStatus', data.already_logged ? 'already logged for today' : 'logged');
-      if (!data.already_logged) fireStamp();
-      loadChapter(); loadHistory();
+      if (data.already_logged) {
+        setStatus('shotStatus', 'already logged for today');
+        if (panelBtn) { panelBtn.textContent = 'mark as shot'; panelBtn.disabled = false; }
+      } else {
+        fireStamp();
+        if (panelBtn) {
+          panelBtn.textContent = 'logged.';
+          setTimeout(() => { panelBtn.textContent = 'mark as shot'; panelBtn.disabled = false; }, 800);
+        }
+        loadChapter(); // triggers smooth ring fill animation
+      }
+      loadHistory();
     } catch (err) {
       setStatus('shotStatus', 'could not log — is the server running?', true);
-    } finally {
-      document.getElementById('shotBtn').disabled = false;
+      if (panelBtn) { panelBtn.textContent = 'mark as shot'; panelBtn.disabled = false; }
     }
   }
 
@@ -1152,23 +1183,45 @@ function dismissSplash() {
     stamp.classList.remove('fire'); void stamp.offsetWidth; stamp.classList.add('fire');
   }
 
-  async function burnCurrent() {
+  function burnCurrent() {
     if (!currentScriptId) return;
-    const panel = document.getElementById('rightPanel');
-    panel.classList.add('burning');
-    try { await authedFetch(`${API_BASE}/scripts/${currentScriptId}/status?status=discarded`, { method: 'PATCH' }); } catch (err) {}
-    setTimeout(() => {
-      panel.classList.remove('burning', 'open');
-      document.getElementById('mainCol').classList.remove('panel-open');
-      document.getElementById('reopenHandle').classList.add('hidden-handle');
-      currentScriptId = null; currentScript = null; loadHistory();
-    }, 550);
+    const id = currentScriptId;
+    const statusEl = document.getElementById('shotStatus');
+    statusEl.innerHTML = 'burned. <button class="burn-undo-btn" id="burnPanelUndo">undo</button>';
+    document.getElementById('burnPanelUndo').addEventListener('click', () => {
+      clearTimeout(burnTimers['panel']);
+      delete burnTimers['panel'];
+      setStatus('shotStatus', '');
+    });
+    burnTimers['panel'] = setTimeout(async () => {
+      delete burnTimers['panel'];
+      const panel = document.getElementById('rightPanel');
+      panel.classList.add('burning');
+      try { await authedFetch(`${API_BASE}/scripts/${id}/status?status=discarded`, { method: 'PATCH' }); } catch {}
+      setTimeout(() => {
+        panel.classList.remove('burning', 'open');
+        document.getElementById('mainCol').classList.remove('panel-open');
+        document.getElementById('reopenHandle').classList.add('hidden-handle');
+        currentScriptId = null; currentScript = null;
+        setStatus('shotStatus', '');
+        loadHistory();
+      }, 550);
+    }, 3000);
   }
 
-  async function burnHistoryItem(scriptId, itemEl) {
-    itemEl.classList.add('burning');
-    try { await authedFetch(`${API_BASE}/scripts/${scriptId}/status?status=discarded`, { method: 'PATCH' }); } catch (err) {}
-    setTimeout(() => loadHistory(), 550);
+  function burnHistoryItem(scriptId, itemEl) {
+    if (burnTimers[scriptId]) return; // already pending
+    itemEl.innerHTML = `<div class="burn-pending">burned. <button class="burn-undo-btn" data-undo="${scriptId}">undo</button></div>`;
+    itemEl.querySelector('[data-undo]').addEventListener('click', () => {
+      clearTimeout(burnTimers[scriptId]);
+      delete burnTimers[scriptId];
+      loadHistory();
+    });
+    burnTimers[scriptId] = setTimeout(async () => {
+      delete burnTimers[scriptId];
+      try { await authedFetch(`${API_BASE}/scripts/${scriptId}/status?status=discarded`, { method: 'PATCH' }); } catch {}
+      loadHistory();
+    }, 3000);
   }
 
   async function revise() {
@@ -1218,26 +1271,69 @@ function dismissSplash() {
 
   function renderHistory(scripts) {
     const list = document.getElementById('historyList');
-    const visible = scripts.filter(s => s.status !== 'discarded');
-    if (!visible.length) { list.innerHTML = '<div class="history-empty">nothing yet — generate your first one in Today</div>'; return; }
+    const all = scripts.filter(s => s.status !== 'discarded');
+
+    // Day filter (from calendar click)
+    if (histDayFilter) {
+      const filterStr = histDayFilter.toDateString();
+      const filtered = all.filter(s => s.created_at && new Date(s.created_at).toDateString() === filterStr);
+      const label = histDayFilter.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+      list.innerHTML = '';
+      const bar = document.createElement('div');
+      bar.className = 'hist-filter-bar';
+      bar.innerHTML = `showing ${label} <button class="hist-filter-clear">clear</button>`;
+      bar.querySelector('.hist-filter-clear').addEventListener('click', () => { histDayFilter = null; renderHistory(historyCache); });
+      list.appendChild(bar);
+      if (!filtered.length) { list.insertAdjacentHTML('beforeend', '<div class="history-empty">nothing on that day</div>'); return; }
+      filtered.forEach(s => list.appendChild(buildHistoryItem(s)));
+      renderCalendar();
+      return;
+    }
+
+    if (!all.length) { list.innerHTML = '<div class="history-empty">nothing yet — generate your first one in Brainstorm</div>'; return; }
+
+    // 7-day pagination window
+    const now = new Date();
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - histDaysShown);
+    const windowed = all.filter(s => !s.created_at || new Date(s.created_at) >= cutoff);
+    const hasMore = all.some(s => s.created_at && new Date(s.created_at) < cutoff);
+
     list.innerHTML = '';
-    visible.forEach(s => {
-      const item = document.createElement('div');
-      item.className = 'history-item';
-      const date = s.created_at ? new Date(s.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
-      const shotBtnHtml = s.status === 'draft' ? `<button class="btn btn-rust btn-xs" data-shot-id="${s.id}">shot this</button>` : '';
-      const top = document.createElement('div');
-      top.className = 'history-item-top';
-      top.innerHTML = `<span class="history-topic">${escapeHtml(s.topic)}</span><span class="history-meta">${shotBtnHtml}<span class="pill ${s.status}">${s.status}</span> ${date} <button class="btn btn-ghost btn-xs" data-burn-id="${s.id}">burn</button></span>`;
-      top.addEventListener('click', () => showScriptInPanel(s, 'history'));
-      const shotBtn = top.querySelector('[data-shot-id]');
-      if (shotBtn) shotBtn.addEventListener('click', (e) => { e.stopPropagation(); shotBtn.disabled = true; shotBtn.textContent = 'logging…'; markShot(s.id); });
-      const burnBtn = top.querySelector('[data-burn-id]');
-      burnBtn.addEventListener('click', (e) => { e.stopPropagation(); burnHistoryItem(s.id, item); });
-      item.appendChild(top);
-      list.appendChild(item);
-    });
+    if (!windowed.length) { list.innerHTML = '<div class="history-empty">nothing in the last ' + histDaysShown + ' days</div>'; }
+    else { windowed.forEach(s => list.appendChild(buildHistoryItem(s))); }
+
+    if (hasMore) {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-ghost'; btn.style.cssText = 'width:100%; margin-top:12px; font-size:11px;';
+      btn.textContent = 'load more';
+      btn.addEventListener('click', () => { histDaysShown += 7; renderHistory(historyCache); });
+      list.appendChild(btn);
+    }
     renderCalendar();
+  }
+
+  function buildHistoryItem(s) {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+    const date = s.created_at ? new Date(s.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+    const shotBtnHtml = s.status === 'draft' ? `<button class="btn btn-rust btn-xs" data-shot-id="${s.id}">shot this</button>` : '';
+    const top = document.createElement('div');
+    top.className = 'history-item-top';
+    top.innerHTML = `<span class="history-topic">${escapeHtml(s.topic)}</span><span class="history-meta">${shotBtnHtml}<span class="pill ${s.status}">${s.status}</span> ${date} <button class="btn btn-ghost btn-xs" data-burn-id="${s.id}">burn</button></span>`;
+    top.addEventListener('click', () => showScriptInPanel(s, 'history'));
+    const shotBtn = top.querySelector('[data-shot-id]');
+    if (shotBtn) shotBtn.addEventListener('click', (e) => { e.stopPropagation(); shotBtn.disabled = true; shotBtn.textContent = 'logging…'; markShot(s.id); });
+    const burnBtn = top.querySelector('[data-burn-id]');
+    burnBtn.addEventListener('click', (e) => { e.stopPropagation(); burnHistoryItem(s.id, item); });
+    item.appendChild(top);
+    if (s.caption) {
+      const preview = document.createElement('div');
+      preview.className = 'history-caption-preview';
+      preview.textContent = s.caption.slice(0, 140);
+      item.appendChild(preview);
+    }
+    return item;
   }
 
   // ---------- calendar view ----------
@@ -1305,20 +1401,10 @@ function dismissSplash() {
   }
 
   function showCalDayDetail(day, scripts) {
-    const el = document.getElementById('calDayDetail');
-    const dateLabel = new Date(calYear, calMonth, day).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
-    el.innerHTML = `
-      <div class="cal-day-detail">
-        <div class="cal-day-detail-head">${dateLabel}</div>
-        ${scripts.map(s => `<div class="cal-day-item" data-id="${s.id}">${escapeHtml(s.topic)}</div>`).join('')}
-      </div>
-    `;
-    el.querySelectorAll('.cal-day-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const s = scripts.find(sc => sc.id === item.dataset.id);
-        if (s) showScriptInPanel(s, 'history');
-      });
-    });
+    // Switch to list view filtered to this day
+    histDayFilter = new Date(calYear, calMonth, day);
+    setHistMode('list');
+    renderHistory(historyCache);
   }
 
   function renderCategoryChips() {
@@ -1532,6 +1618,21 @@ function dismissSplash() {
     } catch (err) {}
   }
 
+  // ---------- count-up ----------
+  function countUp(el, target, duration = 500) {
+    const n = Number(target);
+    if (!target || isNaN(n)) { el.textContent = target ?? '—'; return; }
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(ease * n).toLocaleString();
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = n.toLocaleString();
+    };
+    requestAnimationFrame(tick);
+  }
+
   // ---------- insights ----------
   async function loadInsights() {
     const body = document.getElementById('insightsBody');
@@ -1594,10 +1695,15 @@ function dismissSplash() {
       <div class="insights-grid">${cards}</div>
       ${mediaHtml}
     `;
+    // Animate top-line numbers up from zero
+    body.querySelectorAll('.insights-value').forEach(el => {
+      const raw = el.textContent.replace(/,/g, '');
+      const n = Number(raw);
+      if (!isNaN(n) && n > 0) countUp(el, n);
+    });
   }
 
   async function boot() {
-    const online = await checkServer();
     const session = loadSession();
     if (session && session.access_token) {
       accessToken = session.access_token; refreshToken = session.refresh_token;
@@ -1605,7 +1711,6 @@ function dismissSplash() {
     } else {
       document.getElementById('authScreen').classList.remove('hidden');
     }
-    if (online) setInterval(checkServer, 15000);
   }
 </script>
 
