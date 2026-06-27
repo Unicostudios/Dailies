@@ -1,5 +1,6 @@
 import asyncio
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import scripts, progress, instagram
 from app.services.scheduler import run_scheduler_loop
@@ -26,3 +27,7 @@ async def start_background_scheduler():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse("frontend.html")
