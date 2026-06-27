@@ -157,3 +157,49 @@ async def publish_video(ig_business_id: str, access_token: str, video_url: str, 
         )
         publish_res.raise_for_status()
         return publish_res.json()["id"]
+async def get_account_insights(ig_user_id: str, access_token: str) -> dict:
+    """Fetches account-level metrics, time-series insights, and recent media performance."""
+    async with httpx.AsyncClient() as client:
+        # Account totals
+        profile_res = await client.get(
+            f"{GRAPH_BASE}/{ig_user_id}",
+            params={
+                "fields": "followers_count,media_count,username",
+                "access_token": access_token,
+            },
+        )
+        profile_res.raise_for_status()
+        profile = profile_res.json()
+
+        # Time-series insights (last 30 days, daily)
+        insights_res = await client.get(
+            f"{GRAPH_BASE}/{ig_user_id}/insights",
+            params={
+                "metric": "reach,profile_views",
+                "period": "day",
+                "metric_type": "time_series",
+                "access_token": access_token,
+            },
+        )
+        insights_res.raise_for_status()
+        insights_data = insights_res.json().get("data", [])
+
+        # Recent media + per-post performance
+        media_res = await client.get(
+            f"{GRAPH_BASE}/{ig_user_id}/media",
+            params={
+                "fields": "id,caption,media_type,timestamp,permalink,like_count,comments_count",
+                "limit": 10,
+                "access_token": access_token,
+            },
+        )
+        media_res.raise_for_status()
+        media_items = media_res.json().get("data", [])
+
+        return {
+            "followers_count": profile.get("followers_count"),
+            "media_count": profile.get("media_count"),
+            "username": profile.get("username"),
+            "trends": insights_data,
+            "recent_media": media_items,
+        }

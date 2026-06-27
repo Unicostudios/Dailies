@@ -120,3 +120,18 @@ def cancel_scheduled(post_id: str, user_id: str = Depends(get_current_user_id)):
     if not res.data:
         raise HTTPException(status_code=404, detail="not found")
     return res.data[0]
+@router.get("/insights")
+async def insights(user_id: str = Depends(get_current_user_id)):
+    sb = get_supabase()
+    res = (
+        sb.table("instagram_accounts")
+        .select("ig_user_id, access_token")
+        .eq("user_id", user_id)
+        .execute()
+    )
+    if not res.data:
+        raise HTTPException(status_code=400, detail="connect your Instagram account first")
+
+    account = res.data[0]
+    data = await ig.get_account_insights(account["ig_user_id"], account["access_token"])
+    return data
