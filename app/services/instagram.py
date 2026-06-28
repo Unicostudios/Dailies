@@ -32,8 +32,7 @@ META_REDIRECT_URI = os.environ.get("META_REDIRECT_URI", "")
 GRAPH_BASE = "https://graph.facebook.com/v21.0"
 OAUTH_DIALOG = "https://www.facebook.com/v21.0/dialog/oauth"
 
-SCOPES = "instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement"
-
+SCOPES = "instagram_basic,instagram_content_publish,instagram_manage_insights,pages_show_list,pages_read_engagement"
 
 def get_oauth_url(state: str) -> str:
     params = (
