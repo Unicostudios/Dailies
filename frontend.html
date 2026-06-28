@@ -948,31 +948,60 @@ function dismissSplash() {
   }
 
   function onAvatarChosen(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 800000) {
-      alert('pick a smaller image (under ~800kb) — it gets stored directly on your account');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const dataUrl = reader.result;
-      document.getElementById('profileAvatar').style.backgroundImage = `url(${dataUrl})`;
-      document.getElementById('profileAvatar').textContent = '';
-      try {
-        await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-          method: 'PUT',
-          headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: { avatar_url: dataUrl } })
-        });
-        const session = loadSession() || {};
-        session.avatar_url = dataUrl;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-      } catch (err) {}
-    };
-    reader.readAsDataURL(file);
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5000000) {
+    alert('pick a smaller image (under 5mb)');
+    return;
   }
+  const avatarEl = document.getElementById('profileAvatar');
+  const originalContent = avatarEl.innerHTML;
+  avatarEl.textContent = '…';
+  (async () => {
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      const path = `${userIdForAvatar()}/avatar.${ext}`;
+      const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/Avatars/${path}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Content-Type': file.type || 'application/octet-stream',
+          'x-upsert': 'true'
+        },
+        body: file
+      });
+      if (!uploadRes.ok) {
+        alert('could not upload photo — try again');
+        avatarEl.innerHTML = originalContent;
+        return;
+      }
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/Avatars/${path}?t=${Date.now()}`;
+      await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+        method: 'PUT',
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: { avatar_url: publicUrl } })
+      });
+      avatarEl.style.backgroundImage = `url(${publicUrl})`;
+      avatarEl.textContent = '';
+      const session = loadSession() || {};
+      session.avatar_url = publicUrl;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    } catch (err) {
+      alert('could not upload photo — try again');
+      avatarEl.innerHTML = originalContent;
+    }
+  })();
+}
 
+function userIdForAvatar() {
+  try {
+    const payload = JSON.parse(atob(accessToken.split('.')[1]));
+    return payload.sub;
+  } catch {
+    return 'unknown';
+  }
+}
   function authHeaders(isFormData) {
     return isFormData
       ? { 'Authorization': `Bearer ${accessToken}` }
