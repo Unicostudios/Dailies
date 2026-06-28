@@ -60,6 +60,12 @@ def status(user_id: str = Depends(get_current_user_id)):
         return {"connected": False}
     return {"connected": True, **res.data[0]}
 
+@router.delete("/disconnect")
+def disconnect(user_id: str = Depends(get_current_user_id)):
+    sb = get_supabase()
+    sb.table("instagram_accounts").delete().eq("user_id", user_id).execute()
+    return {"disconnected": True}
+
 
 @router.post("/upload-video")
 async def upload(file: UploadFile = File(...), user_id: str = Depends(get_current_user_id)):
