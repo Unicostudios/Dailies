@@ -181,6 +181,7 @@ async def get_account_insights(ig_user_id: str, access_token: str) -> dict:
                 "access_token": access_token,
             },
         )
+        print("META INSIGHTS ERROR:", insights_res.status_code, insights_res.text)
         insights_res.raise_for_status()
         insights_data = insights_res.json().get("data", [])
 
