@@ -8,18 +8,14 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 app = FastAPI(title="ReelStreak API")
 
-class NoCompressionMiddleware(BaseHTTPMiddleware):
+class NoTransformMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
-        # Strip brotli/deflate from what the client claims to accept,
-        # forcing Railway's edge to only ever consider gzip (or nothing)
-        if "accept-encoding" in request.headers:
-            request.headers.__dict__["_list"] = [
-                (k, v) for k, v in request.headers.raw if k.lower() != b"accept-encoding"
-            ]
         response = await call_next(request)
+        existing = response.headers.get("cache-control", "")
+        response.headers["cache-control"] = (existing + ", no-transform").strip(", ")
         return response
 
-app.add_middleware(NoCompressionMiddleware)
+app.add_middleware(NoTransformMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
