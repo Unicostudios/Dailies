@@ -500,7 +500,6 @@
               <div class="profile-since" style="margin-top:6px; cursor:pointer; text-decoration:underline;" onclick="document.getElementById('avatarInput').click()">change photo</div>
             </div>
           </div>
-          <div class="row"><button class="btn btn-ghost" onclick="logout()">sign out</button></div>
         </div>
 
         <div class="profile-card glass" style="margin-top:20px;">
@@ -543,6 +542,10 @@
               <button class="btn btn-ghost plan-cta" disabled>coming soon</button>
             </div>
           </div>
+        </div>
+
+        <div style="text-align:center; margin-top:40px; padding-top:20px; border-top:1px solid var(--line);">
+          <span onclick="logout()" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-faint); cursor:pointer; text-decoration:underline;">sign out</span>
         </div>
       </section>
 
@@ -1560,13 +1563,21 @@ function userIdForAvatar() {
       const res = await authedFetch(`${API_BASE}/instagram/status`);
       const data = await res.json();
       if (data.connected) {
-        block.innerHTML = `<p class="status-line" style="margin-top:0;">connected as <b>@${escapeHtml(data.ig_username || 'unknown')}</b></p>`;
+        block.innerHTML = `<p class="status-line" style="margin-top:0;">connected as <b>@${escapeHtml(data.ig_username || 'unknown')}</b> <button class="btn btn-ghost btn-xs" onclick="disconnectInstagram()" style="margin-left:8px;">disconnect</button></p>`;
       } else {
         block.innerHTML = `<button class="btn btn-ghost" onclick="connectInstagram()">connect instagram</button>`;
       }
     } catch (err) {
       block.innerHTML = `<p class="status-line error" style="margin-top:0;">could not check instagram status</p>`;
     }
+  }
+
+  async function disconnectInstagram() {
+    if (!confirm('Disconnect Instagram? You can reconnect anytime.')) return;
+    try {
+      await authedFetch(`${API_BASE}/instagram/disconnect`, { method: 'DELETE' });
+      loadInstagramStatus();
+    } catch (err) {}
   }
 
   async function connectInstagram() {
