@@ -10,8 +10,13 @@ app = FastAPI(title="ReelStreak API")
 
 class NoCompressionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
+        # Strip brotli/deflate from what the client claims to accept,
+        # forcing Railway's edge to only ever consider gzip (or nothing)
+        if "accept-encoding" in request.headers:
+            request.headers.__dict__["_list"] = [
+                (k, v) for k, v in request.headers.raw if k.lower() != b"accept-encoding"
+            ]
         response = await call_next(request)
-        response.headers["Content-Encoding"] = "identity"
         return response
 
 app.add_middleware(NoCompressionMiddleware)
