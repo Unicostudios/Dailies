@@ -177,7 +177,7 @@ async def get_account_insights(ig_user_id: str, access_token: str) -> dict:
             params={
                 "metric": "reach",
                 "period": "day",
-                "metric_type": "time_series",
+                "metric_type": "total_value",
                 "access_token": access_token,
             },
         )
