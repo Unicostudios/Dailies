@@ -171,12 +171,18 @@ async def get_account_insights(ig_user_id: str, access_token: str) -> dict:
         profile = profile_res.json()
 
         # Time-series insights (last 30 days, daily)
+        import time
+        now_ts = int(time.time())
+        since_ts = now_ts - 30 * 24 * 60 * 60
+
         insights_res = await client.get(
             f"{GRAPH_BASE}/{ig_user_id}/insights",
             params={
                 "metric": "reach",
                 "period": "day",
                 "metric_type": "total_value",
+                "since": since_ts,
+                "until": now_ts,
                 "access_token": access_token,
             },
         )
