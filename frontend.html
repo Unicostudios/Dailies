@@ -576,8 +576,8 @@
 
           <div class="mini-stats">
             <div class="panel-surface mini-stat"><span class="mini-stat-label">Followers</span><span class="mini-stat-val display" id="statFollowers">—</span></div>
-            <div class="panel-surface mini-stat"><span class="mini-stat-label">Impressions</span><span class="mini-stat-val display" id="statImpressions">—</span></div>
-            <div class="panel-surface mini-stat"><span class="mini-stat-label">Profile Views</span><span class="mini-stat-val display" id="statProfileViews">—</span></div>
+            <div class="panel-surface mini-stat"><span class="mini-stat-label">Views</span><span class="mini-stat-val display" id="statImpressions">—</span></div>
+            <div class="panel-surface mini-stat"><span class="mini-stat-label">Accounts Engaged</span><span class="mini-stat-val display" id="statProfileViews">—</span></div>
           </div>
         </div>
 
@@ -1417,8 +1417,10 @@
   function renderInsights(data) {
     const followers = data.followers_count ?? data.followers ?? null;
     const reachTrend = (data.trends || []).find(t => t.name === 'reach'); const reach = reachTrend?.total_value?.value ?? null;
-    const impressions = data.impressions ?? null;
-    const profileViews = data.profile_views ?? data.profile_views_count ?? null;
+    const viewsTrend = (data.trends || []).find(t => t.name === 'views');
+    const impressions = viewsTrend?.total_value?.value ?? null;
+    const engagedTrend = (data.trends || []).find(t => t.name === 'accounts_engaged');
+    const profileViews = engagedTrend?.total_value?.value ?? null;
     const fmt = n => n == null ? '—' : Number(n).toLocaleString();
 
     countUp(document.getElementById('reachNum'), reach || 0);
