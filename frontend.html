@@ -1416,7 +1416,7 @@
 
   function renderInsights(data) {
     const followers = data.followers_count ?? data.followers ?? null;
-    const reach = data.reach ?? null;
+    const reachTrend = (data.trends || []).find(t => t.name === 'reach'); const reach = reachTrend?.total_value?.value ?? null;
     const impressions = data.impressions ?? null;
     const profileViews = data.profile_views ?? data.profile_views_count ?? null;
     const fmt = n => n == null ? '—' : Number(n).toLocaleString();
